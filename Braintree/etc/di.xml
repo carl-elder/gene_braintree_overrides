@@ -1,0 +1,87 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Copyright © 2013-2017 Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <preference for="Magento\Braintree\Api\Data\TransactionDetailDataInterface" type="Magento\Braintree\Model\TransactionDetail" />
+    <!-- Braintree commands  -->
+    <virtualType name="BraintreeAuthorizeCommand" type="Magento\Payment\Gateway\Command\GatewayCommand">
+        <arguments>
+            <argument name="requestBuilder" xsi:type="object">BraintreeAuthorizeRequest</argument>
+            <argument name="transferFactory" xsi:type="object">Magento\Braintree\Gateway\Http\TransferFactory</argument>
+            <argument name="client" xsi:type="object">Magento\Braintree\Gateway\Http\Client\TransactionSale</argument>
+            <argument name="handler" xsi:type="object">BraintreeAuthorizationHandler</argument>
+            <argument name="validator" xsi:type="object">XXXX\Braintree\Gateway\Validator\ResponseValidator</argument>
+        </arguments>
+    </virtualType>
+    <!-- Capture commands  -->
+    <virtualType name="BraintreeCaptureCommand" type="Magento\Payment\Gateway\Command\GatewayCommand">
+        <arguments>
+            <argument name="requestBuilder" xsi:type="object">BraintreeCaptureRequest</argument>
+            <argument name="transferFactory" xsi:type="object">Magento\Braintree\Gateway\Http\TransferFactory</argument>
+            <argument name="client" xsi:type="object">Magento\Braintree\Gateway\Http\Client\TransactionSubmitForSettlement</argument>
+            <argument name="handler" xsi:type="object">Magento\Braintree\Gateway\Response\TransactionIdHandler</argument>
+            <argument name="validator" xsi:type="object">XXXX\Braintree\Gateway\Validator\ResponseValidator</argument>
+        </arguments>
+    </virtualType>
+
+    <!-- Vault Authorization command -->
+    <virtualType name="BraintreeVaultAuthorizeCommand" type="Magento\Payment\Gateway\Command\GatewayCommand">
+        <arguments>
+            <argument name="requestBuilder" xsi:type="object">BraintreeVaultAuthorizeRequest</argument>
+            <argument name="transferFactory" xsi:type="object">Magento\Braintree\Gateway\Http\TransferFactory</argument>
+            <argument name="client" xsi:type="object">Magento\Braintree\Gateway\Http\Client\TransactionSale</argument>
+            <argument name="handler" xsi:type="object">BraintreeVaultResponseHandler</argument>
+            <argument name="validator" xsi:type="object">XXXX\Braintree\Gateway\Validator\ResponseValidator</argument>
+        </arguments>
+    </virtualType>
+    <!-- Vault Capture (Sale actually) command -->
+    <virtualType name="BraintreeVaultCaptureCommand" type="Magento\Payment\Gateway\Command\GatewayCommand">
+        <arguments>
+            <argument name="requestBuilder" xsi:type="object">BraintreeVaultCaptureRequest</argument>
+            <argument name="transferFactory" xsi:type="object">Magento\Braintree\Gateway\Http\TransferFactory</argument>
+            <argument name="client" xsi:type="object">Magento\Braintree\Gateway\Http\Client\TransactionSale</argument>
+            <argument name="handler" xsi:type="object">Magento\Braintree\Gateway\Response\TransactionIdHandler</argument>
+            <argument name="validator" xsi:type="object">XXXX\Braintree\Gateway\Validator\ResponseValidator</argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="BraintreeAuthorizeRequest" type="Magento\Payment\Gateway\Request\BuilderComposite">
+        <arguments>
+            <argument name="builders" xsi:type="array">
+                <item name="customer" xsi:type="string">Magento\Braintree\Gateway\Request\CustomerDataBuilder</item>
+                <item name="payment" xsi:type="string">Magento\Braintree\Gateway\Request\PaymentDataBuilder</item>
+                <item name="channel" xsi:type="string">Magento\Braintree\Gateway\Request\ChannelDataBuilder</item>
+                <item name="fraud" xsi:type="string">Magento\Braintree\Gateway\Request\FraudDataBuilder</item>
+                <item name="source" xsi:type="string">Magento\Braintree\Gateway\Request\TransactionSourceDataBuilder</item>
+                <item name="customFields" xsi:type="string">Magento\Braintree\Gateway\Request\CustomFieldsDataBuilder</item>
+                <item name="address" xsi:type="string">Magento\Braintree\Gateway\Request\AddressDataBuilder</item>
+                <item name="vault" xsi:type="string">XXXX\Braintree\Gateway\Request\VaultDataBuilder</item>
+                <item name="3dsecure" xsi:type="string">Magento\Braintree\Gateway\Request\ThreeDSecureDataBuilder</item>
+                <item name="device_data" xsi:type="string">Magento\Braintree\Gateway\Request\KountPaymentDataBuilder</item>
+                <item name="dynamic_descriptor" xsi:type="string">Magento\Braintree\Gateway\Request\DescriptorDataBuilder</item>
+            </argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="BraintreePayPalAuthorizeRequest" type="Magento\Payment\Gateway\Request\BuilderComposite">
+        <arguments>
+            <argument name="builders" xsi:type="array">
+                <item name="customer" xsi:type="string">Magento\Braintree\Gateway\Request\CustomerDataBuilder</item>
+                <item name="payment" xsi:type="string">Magento\Braintree\Gateway\Request\PaymentDataBuilder</item>
+                <item name="channel" xsi:type="string">Magento\Braintree\Gateway\Request\ChannelDataBuilder</item>
+                <item name="fraud" xsi:type="string">Magento\Braintree\Gateway\Request\FraudDataBuilder</item>
+                <item name="source" xsi:type="string">Magento\Braintree\Gateway\Request\TransactionSourceDataBuilder</item>
+                <item name="customFields" xsi:type="string">Magento\Braintree\Gateway\Request\CustomFieldsDataBuilder</item>
+                <item name="vault" xsi:type="string">XXXX\Braintree\Gateway\Request\PayPal\VaultDataBuilder</item>
+                <item name="payee" xsi:type="string">Magento\Braintree\Gateway\Request\PayPal\PayeeDataBuilder</item>
+                <item name="device_data" xsi:type="string">Magento\Braintree\Gateway\Request\PayPal\DeviceDataBuilder</item>
+                <item name="dynamic_descriptor" xsi:type="string">Magento\Braintree\Gateway\Request\DescriptorDataBuilder</item>
+                <item name="address" xsi:type="string">Magento\Braintree\Gateway\Request\AddressDataBuilder</item>
+            </argument>
+        </arguments>
+    </virtualType>
+</config>
